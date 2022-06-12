@@ -1,6 +1,12 @@
 import readline from "node:readline";
 import { stdin as input, stdout as output } from "node:process";
 import { createHmac } from "node:crypto";
+import {
+  streamToString,
+  invalidInput,
+  operationFailed,
+  exitFunc,
+} from "./src/utils.js";
 import zlib from "node:zlib";
 import path from "node:path";
 import os from "node:os";
@@ -17,11 +23,11 @@ const rl = readline.createInterface({
 let __dirname = homedir();
 
 console.log(`${EOL}Welcome to the File Manager, ${userName}!`);
-writeCurrentDirectory();
+writeCurrentDirectory(__dirname);
 
 rl.on("line", (answer) => {
   if (answer.toLowerCase().trim() == ".exit") {
-    exitFunc();
+    exitFunc(process, userName);
   }
   const answerArr = answer.split(" ");
   switch (answerArr[0]) {
@@ -49,11 +55,10 @@ rl.on("line", (answer) => {
       fs.readdir(__dirname, (err, files) => {
         if (err) console.log(err);
         else {
-          console.log(`${EOL}Current directory filenames:`);
           files.forEach((file) => {
             console.log(file);
           });
-          writeCurrentDirectory();
+          writeCurrentDirectory(__dirname);
         }
       });
       break;
@@ -67,7 +72,16 @@ rl.on("line", (answer) => {
           console.log(JSON.stringify(os.EOL));
           break;
         case "--cpus":
-          console.log(os.cpus());
+          console.table(
+            os
+              .cpus()
+              .map((val) => [
+                val.model,
+                val.speed < 1000
+                  ? (val.speed / 10).toFixed(2) + " GHz"
+                  : (val.speed / 1000).toFixed(2) + " GHz",
+              ]),
+          );
           break;
         case "--homedir":
           console.log(os.homedir());
@@ -87,6 +101,7 @@ rl.on("line", (answer) => {
         invalidInput();
         break;
       }
+
       let initialPathOnReadFile = answerArr[1].startsWith("/")
         ? "/"
         : __dirname;
@@ -107,7 +122,7 @@ rl.on("line", (answer) => {
         break;
       }
       let pathToCreateFile = path.join(__dirname, answerArr[1]);
-      const writableStream = fs.createWriteStream(pathToCreateFile, {
+      fs.createWriteStream(pathToCreateFile, {
         flags: "a",
       });
 
@@ -287,29 +302,10 @@ rl.on("line", (answer) => {
 });
 
 process.on("SIGINT", () => {
-  exitFunc();
+  exitFunc(process, userName);
 });
-const exitFunc = () => {
-  console.log(`${EOL}Thank you for using File Manager, ${userName}!`);
-  process.exit();
-};
 
 function writeCurrentDirectory(dir = __dirname) {
   console.log(`${EOL}You are currently in, ${dir}`);
   rl.prompt();
-}
-function invalidInput() {
-  console.error(`${EOL}Invalid input`);
-}
-function operationFailed() {
-  console.log(`${EOL}Operation failed`);
-}
-
-function streamToString(stream) {
-  const chunks = [];
-  return new Promise((resolve, reject) => {
-    stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
-    stream.on("error", (err) => reject(err));
-    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-  });
 }
