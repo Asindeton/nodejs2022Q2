@@ -1,17 +1,20 @@
 import readline from "node:readline";
 import { stdin as input, stdout as output } from "node:process";
+import { createHmac } from "node:crypto";
+import zlib from "node:zlib";
 import path from "node:path";
 import os from "node:os";
 import fs from "node:fs";
-// /Users/dmitrijlegankov/work/RS/nodejs2022Q2
+
 const { EOL, homedir } = os;
-const userName = process.argv[2].split("=")[1];
+const arg = process.argv.splice(2);
+const userName = arg.length > 0 ? arg[0].split("=")[1] : "EmptyName";
 const rl = readline.createInterface({
   input,
   output,
 });
-// let __dirname = homedir();
-let __dirname = path.join(homedir(), "work/RS/nodejs2022Q2");
+
+let __dirname = homedir();
 
 console.log(`${EOL}Welcome to the File Manager, ${userName}!`);
 writeCurrentDirectory();
@@ -87,9 +90,11 @@ rl.on("line", (answer) => {
       let initialPathOnReadFile = answerArr[1].startsWith("/")
         ? "/"
         : __dirname;
+
       let pathToReadFile = path.join(initialPathOnReadFile, answerArr[1]);
-      if (fs.existsSync(pathToFile)) {
-        const readStream = fs.createReadStream(pathToFile);
+
+      if (fs.existsSync(pathToReadFile)) {
+        const readStream = fs.createReadStream(pathToReadFile);
         streamToString(readStream).then(console.log);
       } else {
         invalidInput();
@@ -203,6 +208,78 @@ rl.on("line", (answer) => {
       });
 
       break;
+    case "hash":
+      if (answerArr.length !== 2) {
+        invalidInput();
+        break;
+      }
+      let initialPathOnReadFileHash = answerArr[1].startsWith("/")
+        ? "/"
+        : __dirname;
+
+      let pathToReadFileHash = path.join(
+        initialPathOnReadFileHash,
+        answerArr[1],
+      );
+
+      if (fs.existsSync(pathToReadFileHash)) {
+        const readStreamHash = fs.createReadStream(pathToReadFileHash);
+        streamToString(readStreamHash).then((result) =>
+          console.log(createHmac("sha256", result).digest("hex")),
+        );
+      } else {
+        invalidInput();
+      }
+
+      break;
+    case "compress":
+      if (answerArr.length !== 3) {
+        invalidInput();
+        break;
+      }
+      const pathToFileForCompress = path.join(__dirname, answerArr[1]);
+      const newDirectoryPathCompress = path.join(__dirname, answerArr[2]);
+
+      const brotli = zlib.createBrotliCompress();
+      const cpReadStreamCompress = fs.createReadStream(pathToFileForCompress);
+      const cpWriteStreamCompress = fs.createWriteStream(
+        path.join(newDirectoryPathCompress),
+        {
+          flags: "a",
+        },
+      );
+
+      cpReadStreamCompress
+        .on("error", invalidInput)
+        .pipe(brotli.on("error", operationFailed))
+        .pipe(cpWriteStreamCompress.on("error", invalidInput));
+
+      break;
+    case "decompress":
+      if (answerArr.length !== 3) {
+        invalidInput();
+        break;
+      }
+      const pathToFileForDecompress = path.join(__dirname, answerArr[1]);
+      const newDirectoryPathDecompress = path.join(__dirname, answerArr[2]);
+
+      const decompressBrotli = zlib.createBrotliDecompress();
+      const cpReadStreamDecompress = fs.createReadStream(
+        pathToFileForDecompress,
+      );
+      const cpWriteStreamDecompress = fs.createWriteStream(
+        path.join(newDirectoryPathDecompress),
+        {
+          flags: "a",
+        },
+      );
+
+      cpReadStreamDecompress
+        .on("error", invalidInput)
+        .pipe(decompressBrotli.on("error", operationFailed))
+        .pipe(cpWriteStreamDecompress.on("error", invalidInput));
+
+      break;
     default:
       invalidInput();
   }
@@ -212,7 +289,6 @@ rl.on("line", (answer) => {
 process.on("SIGINT", () => {
   exitFunc();
 });
-
 const exitFunc = () => {
   console.log(`${EOL}Thank you for using File Manager, ${userName}!`);
   process.exit();
