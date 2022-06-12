@@ -77,7 +77,7 @@ rl.on("line", (answer) => {
               .cpus()
               .map((val) => [
                 val.model,
-                val.speed < 1000
+                val.speed < 100
                   ? (val.speed / 10).toFixed(2) + " GHz"
                   : (val.speed / 1000).toFixed(2) + " GHz",
               ]),
