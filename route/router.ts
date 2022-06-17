@@ -1,4 +1,3 @@
-import { IUser } from "./../models/users.model";
 import { HTTPMethod } from "./../models/request.model";
 import { ServerResponse, IncomingMessage } from "node:http";
 import DataController from "../src/DataController";
