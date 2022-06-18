@@ -1,6 +1,6 @@
 import { HTTPMethod } from "./../models/request.model";
 import { ServerResponse, IncomingMessage } from "node:http";
-import DataController from "../src/DataController";
+import { DataController } from "../src/DataController";
 import url from "node:url";
 import ResponseController from "../src/ResponseController";
 import dataBufferGetter from "../src/utils/dataBufferGetter";

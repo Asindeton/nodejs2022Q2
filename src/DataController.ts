@@ -2,10 +2,9 @@ import { ResponseStatus } from "./../models/response.model";
 import { IUser, TResponseData } from "./../models/users.model";
 import { v4 as uuidv4, validate as uuidValidate } from "uuid";
 
-export default class DataController {
+export class DataController {
   data: IUser[] = [];
   dataResponse: IUser | [] = [];
-
   createNewUser(newUserData: IUser) {
     try {
       const { username, age, hobbies }: IUser = newUserData;
@@ -72,3 +71,5 @@ export default class DataController {
     }
   }
 }
+
+export const dataController = new DataController();
