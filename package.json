@@ -9,7 +9,7 @@
     "start:prod": "tsc && node dist/index.js",
     "start:dev": "tsc && nodemon dist/index.js",
     "start:multi": "tsc && node dist/index.js --multi",
-    "test:watch": "jest --watch"
+    "test": "jest --watch"
   },
   "repository": {
     "type": "git",
