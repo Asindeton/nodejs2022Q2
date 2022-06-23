@@ -1,0 +1,36 @@
+{
+  "name": "nodejs2022q2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:ts": "tsc -watch",
+    "dev:node": "nodemon dist/index.js",
+    "start:prod": "tsc && node dist/index.js",
+    "start:dev": "tsc && nodemon dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Asindeton/nodejs2022Q2.git"
+  },
+  "dependencies": {
+    "jimp": "^0.16.1",
+    "robotjs": "^0.6.0",
+    "ws": "^8.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.8.1",
+    "@types/node": "^18.0.0",
+    "dotenv": "^16.0.1",
+    "tslint": "^6.1.3",
+    "typescript": "^4.7.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Asindeton/nodejs2022Q2/issues"
+  },
+  "homepage": "https://github.com/Asindeton/nodejs2022Q2#readme"
+}
