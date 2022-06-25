@@ -94,20 +94,24 @@ wss.on("connection", (ws) => {
       ws.send(`draw_square`);
     } else if (commands == "prnt_scrn") {
       var size = 100;
-      let _x = y > size ? x + size / 2 : x;
-      let _y = x > size ? y + size / 2 : y;
-      console.log({ _x, _y }, { x, y });
-      var img = robot.screen.capture(_x, _y, size, size);
-      // Support for higher density screens.
-      new Jimp(
-        { data: img.image, width: img.width, height: img.height },
-        (err: any, image: any) => {
-          //@ts-ignore
-          image.getBase64(Jimp.AUTO, (err, res) => {
-            ws.send("prnt_scrn " + res.split(",")[1]);
-          });
-        },
-      );
+      const { width, height } = robot.getScreenSize();
+      let _x = x - size / 2 < size / 2 ? x : x - size / 2;
+      let _y = y - size / 2 < size / 2 ? y : y - size / 2;
+      if (_x > width - size) {
+        _x = width - size;
+      }
+      if (_y > height - size) {
+        _y = height - size;
+      }
+      console.log({ _x, _y }, { x, y }, { width, height });
+      captureImage({
+        x: _x,
+        y: _y,
+        w: size,
+        h: size,
+      }).getBase64(Jimp.MIME_BMP, (err, res) => {
+        ws.send("prnt_scrn " + res.split(",")[1]);
+      });
     }
   });
 });
@@ -129,4 +133,38 @@ const drawLine = (
 interface IStartPosition {
   x: number;
   y: number;
+}
+
+function captureImage({
+  x,
+  y,
+  w,
+  h,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}) {
+  const pic = robot.screen.capture(x, y, w, h);
+  const width = pic.byteWidth / pic.bytesPerPixel; // pic.width is sometimes wrong!
+  const height = pic.height;
+  const image = new Jimp(width, height);
+  let red: number, green: number, blue: number;
+  pic.image.forEach((byte: number, i: number) => {
+    switch (i % 4) {
+      case 0:
+        return (blue = byte);
+      case 1:
+        return (green = byte);
+      case 2:
+        return (red = byte);
+      case 3:
+        image.bitmap.data[i - 3] = red;
+        image.bitmap.data[i - 2] = green;
+        image.bitmap.data[i - 1] = blue;
+        image.bitmap.data[i] = 255;
+    }
+  });
+  return image;
 }
