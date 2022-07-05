@@ -1,49 +1,25 @@
-const { ApolloServer, gql } = require("apollo-server");
+import { ApolloServer } from 'apollo-server';
+import { typeDefs } from './app/schema';
+import { resolvers } from './app/resovers';
+import { TrackAPI } from './app/datasources/track-api';
+import 'dotenv/config';
 
-// A schema is a collection of type definitions (hence "typeDefs")
-// that together define the "shape" of queries that are executed against
-// your data.
-const typeDefs = gql`
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+const port = process.env.PORT || 4000;
 
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
-  }
-
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
-  type Query {
-    books: [Book]
-  }
-`;
-const books = [
-  {
-    title: "The Awakening",
-    author: "Kate Chopin",
-  },
-  {
-    title: "City of Glass",
-    author: "Paul Auster",
-  },
-];
-const resolvers = {
-  Query: {
-    books: () => books,
-  },
-};
-// The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  csrfPrevention: true,
-  cache: "bounded",
+    typeDefs,
+    resolvers,
+    dataSources: () => {
+        return {
+            trackAPI: new TrackAPI(),
+        };
+    },
 });
 
-// The `listen` method launches a web server.
-server.listen().then(({ url }: any) => {
-  console.log(`🚀  Server ready at ${url}`);
+server.listen({ port }).then(() => {
+    console.log(`
+    🚀  Server is running!
+    🔉  Listening on port 4000
+    📭  Query at https://studio.apollographql.com/dev
+  `);
 });
