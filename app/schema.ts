@@ -8,6 +8,34 @@ export const typeDefs = gql`
         track(id: ID!): Track!
     }
 
+    type Mutation {
+        registerUser(firstName: String, lastName: String, password: String, email: String): RegisterUserResponse
+        #        firstName: string;
+        #        lastName: string;
+        #        password: string;
+        #        email: string;
+    }
+
+    type RegisterUserResponse implements MutationResponse {
+        "Similar to HTTP status code, represents the status of the mutation"
+        code: Int!
+        "Indicates whether the mutation was successful"
+        success: Boolean!
+        "Human-readable message for the UI"
+        message: String!
+        "Newly updated track after a successful mutation"
+        user: User!
+    }
+
+    interface MutationResponse {
+        "Similar to HTTP status code, represents the status of the mutation"
+        code: Int!
+        "Indicates whether the mutation was successful"
+        success: Boolean!
+        "Human-readable message for the UI"
+        message: String!
+    }
+
     type Artist {
         id: ID!
         firstName: String
@@ -53,9 +81,9 @@ export const typeDefs = gql`
         image: String
     }
     type User {
-        id: ID!
+        _id: ID!
         firstName: String
-        secondName: String
+        lastName: String
         password: String
         email: String!
     }
