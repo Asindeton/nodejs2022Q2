@@ -6,6 +6,7 @@ import 'dotenv/config';
 import { AuthenticationError } from 'apollo-server-express';
 import { verifyUser } from './app/utils/verifyUser';
 import { IVerifyData } from './app/models/user.model';
+import { Artists } from './app/datasources/artists';
 
 const port = process.env.PORT || 4000;
 
@@ -15,16 +16,12 @@ const server = new ApolloServer({
     dataSources: () => {
         return {
             UserApi: new Users(),
+            ArtistsApi: new Artists(),
         };
     },
     context: async ({ req }) => {
         const token = req.headers.authorization || '';
-        if (token) {
-            const { data }: { data: IVerifyData } = await verifyUser(token).catch((error) => {
-                throw new AuthenticationError(error.message);
-            });
-            return { data };
-        }
+        return { token };
     },
 });
 
