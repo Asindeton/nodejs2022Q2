@@ -2,18 +2,15 @@ import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
     type Query {
-        "Query to get tracks array for the homepage grid"
-        tracksForHome: [Track!]!
-        "Fetch a specific track, provided a track's ID"
-        track(id: ID!): Track!
+        "Get user by ID"
+        getUserById(id: ID!): User
+        "Authentication user"
+        loginUser(email: String, password: String): Jwt
+        verifyUser(token: String): User
     }
 
     type Mutation {
         registerUser(firstName: String, lastName: String, password: String, email: String): RegisterUserResponse
-        #        firstName: string;
-        #        lastName: string;
-        #        password: string;
-        #        email: string;
     }
 
     type RegisterUserResponse implements MutationResponse {
@@ -104,5 +101,8 @@ export const typeDefs = gql`
         middleName: String
         instrument: String
         years: [String]
+    }
+    type Jwt {
+        jwt: String
     }
 `;

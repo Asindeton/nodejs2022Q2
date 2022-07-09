@@ -8,7 +8,14 @@ export interface IRegisterUser {
     password: string;
     email: string;
 }
-
-export interface IUserDataSources {
-    registerUser(registerUserData: IRegisterUser): Promise<IUser>;
+export interface ILoinUser {
+    email: string;
+    password: string;
+}
+export interface IVerifyData {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    iat: number;
 }

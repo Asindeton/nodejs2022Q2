@@ -1,21 +1,22 @@
 import { RESTDataSource } from 'apollo-datasource-rest';
-import { IRegisterUser, IUserDataSources } from '../models/user.model';
-export class Users extends RESTDataSource implements IUserDataSources {
+import { ILoinUser, IRegisterUser, IUser } from '../models/user.model';
+import { REQUEST_URL } from '../config/develop.config';
+export class Users extends RESTDataSource {
     constructor() {
         super();
         // the Catstronauts catalog is hosted on this server
-        this.baseURL = 'http://localhost:3004/v1/users/';
+        this.baseURL = REQUEST_URL.USERS;
     }
-    registerUser(registerUserData: IRegisterUser) {
+    registerUser(registerUserData: IRegisterUser): Promise<IUser> {
         return this.post('register', { ...registerUserData });
     }
-    loginUser() {
-        return this.post('login');
+    loginUser(loginUser: ILoinUser) {
+        return this.post('login', { ...loginUser });
     }
-    verifyUser() {
-        return this.post('verify');
+    verifyUser(token: string) {
+        return this.post('verify', {}, { headers: { Authorization: `Bearer ${token}` } });
     }
     getUserById(userId: string) {
-        return this.post(userId);
+        return this.get(userId);
     }
 }

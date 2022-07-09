@@ -1,16 +1,17 @@
-import { IRegisterUser } from './models/user.model';
+import { ILoinUser, IRegisterUser } from './models/user.model';
 
 export const resolvers = {
     Query: {
-        // returns an array of Tracks that will be used to populate the homepage grid of our web client
-        tracksForHome: (_: any, __: any, { dataSources }: any) => {
-            return dataSources.UserAPI.getTracksForHome();
+        // get user by id
+        getUserById: (_: any, { id }: { id: string }, { dataSources }: any) => {
+            return dataSources.UserApi.getUserById(id);
         },
-
-        // // get a single track by ID, for the track page
-        // track: (_: any, { id }: { id: string }, { dataSources }) => {
-        //     return dataSources.trackAPI.getTrack(id);
-        // },
+        loginUser: (_: any, loginUser: ILoinUser, { dataSources }: any) => {
+            return dataSources.UserApi.loginUser(loginUser);
+        },
+        verifyUser: (_: any, { token }: { token: string }, { dataSources }: any) => {
+            return dataSources.UserApi.verifyUser(token);
+        },
     },
     Mutation: {
         registerUser: async (_: any, registerUserData: IRegisterUser, { dataSources }: any) => {
