@@ -1,24 +1,16 @@
 import { ApolloServer } from 'apollo-server';
-import { typeDefs } from './app/schema';
-import { resolvers } from './app/resovers';
-import { Users } from './app/datasources/users';
+import typeDefs from './app/modules/schema';
+import resolvers from './app/modules/resolvers';
 import 'dotenv/config';
-import { AuthenticationError } from 'apollo-server-express';
-import { verifyUser } from './app/utils/verifyUser';
-import { IVerifyData } from './app/models/user.model';
-import { Artists } from './app/datasources/artists';
+
+import dataSources from './app/modules/dataSources';
 
 const port = process.env.PORT || 4000;
 
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    dataSources: () => {
-        return {
-            UserApi: new Users(),
-            ArtistsApi: new Artists(),
-        };
-    },
+    dataSources,
     context: async ({ req }) => {
         const token = req.headers.authorization || '';
         return { token };

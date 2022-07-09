@@ -1,15 +1,7 @@
 import { gql } from 'apollo-server';
 
-export const typeDefs = gql`
+const artistSchema = gql`
     type Query {
-        ###User
-        "Get user by ID"
-        getUserById(id: ID!): User
-        "Authentication user"
-        loginUser(email: String, password: String): Jwt
-        "Check JWT token"
-        verifyUser(token: String): User
-
         ###Artists
         "Get all artists"
         getAllArtists(limit: Int, offset: Int): AllArtistsResponse
@@ -18,20 +10,11 @@ export const typeDefs = gql`
     }
 
     type Mutation {
-        registerUser(userData: UserCreate): RegisterUserResponse
         createArtist(artistData: ArtistCreat): CreateArtistResponse
+        updateArtist(artistData: ArtistCreat, id: ID!): CreateArtistResponse
+        deleteArtist(id: ID!): DeleteArtistResponse
     }
 
-    type RegisterUserResponse implements MutationResponse {
-        "Similar to HTTP status code, represents the status of the mutation"
-        code: Int!
-        "Indicates whether the mutation was successful"
-        success: Boolean!
-        "Human-readable message for the UI"
-        message: String!
-        "Newly updated track after a successful mutation"
-        user: User!
-    }
     type CreateArtistResponse implements MutationResponse {
         "Similar to HTTP status code, represents the status of the mutation"
         code: Int!
@@ -39,15 +22,8 @@ export const typeDefs = gql`
         success: Boolean!
         "Human-readable message for the UI"
         message: String!
+        "Response data"
         artist: Artist
-    }
-    interface MutationResponse {
-        "Similar to HTTP status code, represents the status of the mutation"
-        code: Int!
-        "Indicates whether the mutation was successful"
-        success: Boolean!
-        "Human-readable message for the UI"
-        message: String!
     }
 
     type AllArtistsResponse implements GetAllResponse {
@@ -68,6 +44,21 @@ export const typeDefs = gql`
         offset: Int
         "Total items"
         total: Int
+    }
+    type DeleteArtistResponse implements MutationResponse {
+        "Similar to HTTP status code, represents the status of the mutation"
+        code: Int!
+        "Human-readable message for the UI"
+        message: String!
+        "Indicates whether the mutation was successful"
+        success: Boolean!
+
+        deleteData: DeleteData
+    }
+
+    type DeleteData {
+        acknowledged: Boolean
+        deletedCount: Int
     }
 
     type Artist {
@@ -115,13 +106,7 @@ export const typeDefs = gql`
         genres: [Genre]
         image: String
     }
-    type User {
-        _id: ID!
-        firstName: String
-        lastName: String
-        password: String
-        email: String!
-    }
+
     type Track {
         id: ID!
         title: String!
@@ -140,15 +125,7 @@ export const typeDefs = gql`
         instrument: String
         years: [String]
     }
-    type Jwt {
-        jwt: String
-    }
-    input UserCreate {
-        firstName: String!
-        lastName: String!
-        password: String!
-        email: String!
-    }
+    ### Inputs
     input ArtistCreat {
         firstName: String!
         secondName: String!
@@ -178,3 +155,4 @@ export const typeDefs = gql`
         year: Int
     }
 `;
+export default artistSchema;
