@@ -3,6 +3,7 @@ import { ArtistDataSources } from './artist/artistDataSources';
 import { BandDataSources } from './band/bandDataSources';
 import { GenreDataSources } from './genre/genreDataSources';
 import { TrackDataSources } from './track/trackDataSources';
+import { AlbumDataSources } from './album/albumDataSources';
 
 const dataSources = () => {
     return {
@@ -11,6 +12,7 @@ const dataSources = () => {
         BandsApi: new BandDataSources(),
         GenreApi: new GenreDataSources(),
         TrackApi: new TrackDataSources(),
+        AlbumApi: new AlbumDataSources(),
     };
 };
 
