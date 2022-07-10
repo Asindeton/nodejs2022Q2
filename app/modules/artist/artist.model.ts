@@ -1,3 +1,5 @@
+import { IAllResponse } from '../shared/shared.model';
+
 export interface IArtist extends IArtistRequiredInfo, IArtistAdditionalInfo {
     _id: string;
 }
@@ -14,9 +16,6 @@ export interface IArtistAdditionalInfo {
     bandsIds?: string[];
     instruments?: string[];
 }
-export interface IAllArtistsResponse {
-    limit: number;
-    offset: number;
-    total: number;
+export interface IAllArtistsResponse extends IAllResponse {
     items: IArtist[];
 }

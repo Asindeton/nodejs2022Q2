@@ -10,9 +10,9 @@ const artistSchema = gql`
     }
 
     type Mutation {
-        createArtist(artistData: ArtistCreat): CreateArtistResponse
-        updateArtist(artistData: ArtistCreat, id: ID!): CreateArtistResponse
-        deleteArtist(id: ID!): DeleteArtistResponse
+        createArtist(artistData: ArtistInput): CreateArtistResponse
+        updateArtist(artistData: ArtistInput, id: ID!): CreateArtistResponse
+        deleteArtist(id: ID!): DeleteResponse
     }
 
     type CreateArtistResponse implements MutationResponse {
@@ -37,30 +37,6 @@ const artistSchema = gql`
         items: [Artist]
     }
 
-    interface GetAllResponse {
-        "Max items in response"
-        limit: Int
-        "offset?"
-        offset: Int
-        "Total items"
-        total: Int
-    }
-    type DeleteArtistResponse implements MutationResponse {
-        "Similar to HTTP status code, represents the status of the mutation"
-        code: Int!
-        "Human-readable message for the UI"
-        message: String!
-        "Indicates whether the mutation was successful"
-        success: Boolean!
-
-        deleteData: DeleteData
-    }
-
-    type DeleteData {
-        acknowledged: Boolean
-        deletedCount: Int
-    }
-
     type Artist {
         _id: ID!
         firstName: String!
@@ -73,14 +49,6 @@ const artistSchema = gql`
         instruments: [String]
     }
 
-    type Band {
-        id: ID!
-        name: String
-        origin: String
-        members: [Member]
-        website: String
-        genres: [Genre]
-    }
     type Genre {
         id: ID!
         name: String
@@ -106,7 +74,6 @@ const artistSchema = gql`
         genres: [Genre]
         image: String
     }
-
     type Track {
         id: ID!
         title: String!
@@ -117,38 +84,20 @@ const artistSchema = gql`
         released: Int
         genres: [Genre]
     }
-    type Member {
-        id: ID!
-        firstName: String
-        secondName: String
-        middleName: String
-        instrument: String
-        years: [String]
-    }
+
     ### Inputs
-    input ArtistCreat {
+    input ArtistInput {
         firstName: String!
         secondName: String!
         middleName: String
         birthDate: String
         birthPlace: String
         country: String!
-        bands: [BandCreate]
+        bands: [BandInput]
         instruments: [String]
     }
-    input BandCreate {
-        name: String!
-        origin: String
-        members: [MemberCreate]
-        website: String
-        genres: [GenreCreate]
-    }
-    input MemberCreate {
-        artist: String
-        instrument: String
-        years: [String]
-    }
-    input GenreCreate {
+
+    input GenreInput {
         name: String!
         description: String
         country: String

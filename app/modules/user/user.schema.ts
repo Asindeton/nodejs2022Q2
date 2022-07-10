@@ -1,6 +1,5 @@
 import { gql } from 'apollo-server';
-
-export const userSchema = gql`
+const userSchema = gql`
     type Query {
         ###User
         "Get user by ID"
@@ -12,7 +11,7 @@ export const userSchema = gql`
     }
 
     type Mutation {
-        registerUser(userData: UserCreate): RegisterUserResponse
+        registerUser(userData: UserInput): RegisterUserResponse
     }
 
     type RegisterUserResponse implements MutationResponse {
@@ -24,15 +23,6 @@ export const userSchema = gql`
         message: String!
         "Newly updated track after a successful mutation"
         user: User!
-    }
-
-    interface MutationResponse {
-        "Similar to HTTP status code, represents the status of the mutation"
-        code: Int!
-        "Indicates whether the mutation was successful"
-        success: Boolean!
-        "Human-readable message for the UI"
-        message: String!
     }
 
     type User {
@@ -47,10 +37,11 @@ export const userSchema = gql`
         jwt: String
     }
 
-    input UserCreate {
+    input UserInput {
         firstName: String!
         lastName: String!
         password: String!
         email: String!
     }
 `;
+export default userSchema;
