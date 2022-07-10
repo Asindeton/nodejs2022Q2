@@ -5,4 +5,5 @@ export const enum REQUEST_URL {
     USERS = `http://localhost:3004/v1/users/`,
     ALBUM = 'http://localhost:3005/v1/albums/',
     TRACKS = 'http://localhost:3006/v1/tracks/',
+    FAVORITES = 'http://localhost:3007/v1/favourites',
 }

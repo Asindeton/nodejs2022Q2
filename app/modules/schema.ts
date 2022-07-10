@@ -6,6 +6,7 @@ import memberSchema from './member/member.schema';
 import genreSchema from './genre/genre.schema';
 import trackSchema from './track/track.schema';
 import albumSchema from './album/album.schema';
+import favouritesSchema from './favourites/favourites.schema';
 
 const typeDefs = [
     sharedSchema,
@@ -16,5 +17,6 @@ const typeDefs = [
     genreSchema,
     trackSchema,
     albumSchema,
+    favouritesSchema,
 ];
 export default typeDefs;

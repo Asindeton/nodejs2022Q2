@@ -4,6 +4,7 @@ import { BandDataSources } from './band/bandDataSources';
 import { GenreDataSources } from './genre/genreDataSources';
 import { TrackDataSources } from './track/trackDataSources';
 import { AlbumDataSources } from './album/albumDataSources';
+import { FavouritesDataSources } from './favourites/favouritesDataSources';
 
 const dataSources = () => {
     return {
@@ -13,6 +14,7 @@ const dataSources = () => {
         GenreApi: new GenreDataSources(),
         TrackApi: new TrackDataSources(),
         AlbumApi: new AlbumDataSources(),
+        FavoriteApi: new FavouritesDataSources(),
     };
 };
 
