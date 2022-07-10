@@ -49,13 +49,6 @@ const artistSchema = gql`
         instruments: [String]
     }
 
-    type Genre {
-        id: ID!
-        name: String
-        description: String
-        country: String
-        year: Int
-    }
     type Favourites {
         id: ID!
         userId: ID
@@ -85,7 +78,6 @@ const artistSchema = gql`
         genres: [Genre]
     }
 
-    ### Inputs
     input ArtistInput {
         firstName: String!
         secondName: String!
@@ -95,13 +87,6 @@ const artistSchema = gql`
         country: String!
         bands: [BandInput]
         instruments: [String]
-    }
-
-    input GenreInput {
-        name: String!
-        description: String
-        country: String
-        year: Int
     }
 `;
 export default artistSchema;
