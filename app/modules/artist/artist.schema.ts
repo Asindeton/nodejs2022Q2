@@ -57,26 +57,6 @@ const artistSchema = gql`
         artists: [Artist]
         tracks: [Track]
     }
-    type Album {
-        id: ID!
-        name: String
-        released: Int
-        artists: [Artist]
-        bands: [Band]
-        tracks: [Track]
-        genres: [Genre]
-        image: String
-    }
-    type Track {
-        id: ID!
-        title: String!
-        album: Album
-        artists: [Artist]
-        bands: [Band]
-        duration: Int
-        released: Int
-        genres: [Genre]
-    }
 
     input ArtistInput {
         firstName: String!
